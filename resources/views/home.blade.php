@@ -4,32 +4,35 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            @if (session('status'))
-                <div class="alert alert-success" role="alert">
-                    {{ session('status') }}
-                </div>
-            @endif
             <div class="card">
                 <div class="card-header">{{ $name }}'s To Pet List</div>
 
                 <div class="card-body">
-                    <ul>
+                    <ul class="task-list">
                         @forelse ($tasks as $task)
-                            <li id="task-{{ $task->id }}">
-                                {{ $task->task_name }} 
-                                @if ($task->completed)
-                                    <b>- DONE </b>
-                                @else
-                                    <form method="post" action="{{ route('complete_task', $task->id) }}">
+                            <li id="task-{{ $task->id }}" class="task @if ($task->completed) task-completed @endif">
+                                <div class="dropdown">
+                                  <span tabindex="0" class="dropdown-toggle" id="task-actions-{{ $task->id }}" aria-role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{ $task->task_name }} 
+                                    @if ($task->completed)
+                                        <b>- DONE </b>
+                                    @endif
+                                  </span>
+                                  <div class="dropdown-menu" aria-labelledby="task-actions-{{ $task->id }}">
+                                    @if (!$task->completed)
+                                        <form method="post" action="{{ route('complete_task', $task->id) }}">
+                                            @csrf
+                                            <button type="submit" class="btn btn-success">Done!</button>
+                                        </form>
+                                    @endif
+                                    <a href="{{ route('task', $task->id) }}" class="btn btn-outline-primary btn-edit">Edit</a>
+                                    <form method="post" action="{{ route('delete_task', $task->id) }}">
                                         @csrf
-                                        <input type="submit" value="Done!"> 
+                                        <button type="submit" class="btn btn-danger">Delete</button>
                                     </form>
-                                @endif
-                                <form method="post" action="{{ route('delete_task', $task->id) }}">
-                                    @csrf
-                                    <input type="submit" value="Delete!">
-                                </form>
-                                <a href="{{ route('task', $task->id) }}">Edit</a>
+                                  </div>
+                                </div>
+                                
                             </li>
                         @empty
                             <p>You need to get some animals to pet!</p>
@@ -37,14 +40,28 @@
                     </ul>
                     <form method="post" action="{{ route('add_task') }}">
                         @csrf
-                        <label for="task_name">Animal to pet:</label>
-                        <input type="text" name="task_name" max="100" min="1" placeholder="Enter an animal to add to the list">
-                        @if ($error)
-                            <br>{{ $error }}
-                        @endif
-                        <br>
-                        <input type="submit" value="Add to list!">
-                    </form>
+                        <div class="form-group row">
+                            <label for="task_name" class="col-md-4 col-form-label text-md-right">Animal to pet:</label>
+
+                            <div class="col-md-6">
+                                <input type="text" name="task_name" id="task_name" maxlength="100" minlength="1" 
+                                    placeholder="Name an animal"
+                                    class="form-control @if ($error) is-invalid @endif" required>
+                                @if ($error)
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $error }}</strong>
+                                    </span>
+                                @endif
+
+                            </div>
+                        </div>
+                        <div class="form-group row mb-0 justify-content-center">
+                            <div class="col-4 text-center">
+                                <button type="submit" class="btn btn-success">
+                                    Add to list
+                                </button>
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>

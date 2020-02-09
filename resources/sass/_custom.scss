@@ -1,0 +1,64 @@
+#toast-container {
+	display: flex;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	padding: 1rem;
+
+	@include media-breakpoint-up(md) {
+		bottom: unset;
+		left: unset;
+		top: 0;
+		right: 0;
+		width: 350px;
+	}
+
+	.toast {
+		width: 100%;
+		max-width: 100%;
+	}
+}
+
+.navbar-dark{
+	background-color: $primary;
+
+	.navbar-nav .nav-link {
+		color: white;
+		font-weight: bold;
+	}
+}
+
+.card {
+	border: none;
+	border-radius: 2rem;
+}
+
+.card-header {
+	font-size: 1.4em;
+	font-weight: bold;
+	background-color: transparent;
+	border-color: $body-bg;
+	border-width: 0.2rem;
+	text-align: center;
+}
+
+.task {
+	.dropdown-toggle {
+		cursor: pointer;
+	}
+	.dropdown-menu {
+		padding: 0;
+		margin: 0;
+		border: none;
+
+		.btn {
+			border-radius: 0;
+			width: 100%;
+		}
+
+		form:last-child .btn{
+			border-radius: 0 0 0.25rem 0.25rem;
+		}
+	}
+}

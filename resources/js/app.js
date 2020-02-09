@@ -6,6 +6,14 @@
 
 require('./bootstrap');
 
+$(function () {
+    $('.toast').toast('show');
+
+    $('span.dropdown-toggle').on('keydown', function(e) {
+      if (e.key === ' ' || e.key === 'Enter') $(e.target).trigger('click');
+    });
+});
+
 window.Vue = require('vue');
 
 /**
