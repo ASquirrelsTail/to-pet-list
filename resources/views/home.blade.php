@@ -15,9 +15,20 @@
                 <div class="card-body">
                     <ul>
                         @forelse ($tasks as $task)
-                            <li>
-                                {{ $task->task_name }}
-                                
+                            <li id="task-{{ $task->id }}">
+                                {{ $task->task_name }} 
+                                @if ($task->completed)
+                                    <b>- DONE </b>
+                                @else
+                                    <form method="post" action="{{ route('complete_task', $task->id) }}">
+                                        @csrf
+                                        <input type="submit" value="Done!"> 
+                                    </form>
+                                @endif
+                                <form method="post" action="{{ route('delete_task', $task->id) }}">
+                                    @csrf
+                                    <input type="submit" value="Delete!">
+                                </form>
                             </li>
                         @empty
                             <p>You need to get some animals to pet!</p>

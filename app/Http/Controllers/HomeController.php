@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use DB;
+use Log;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -19,7 +20,35 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+     * Checks a task exists and belongs to the current user.
+     * Returns a collection for that task.
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    protected function getTask($id)
+    {
+        if (is_numeric($id)) {
+            $id = (int) $id;
+        } else {
+            abort(404);
+        }
+
+        $user_id = Auth::user()->id;
+        $task_query = DB::table('tasks')->where('id', $id);
+        $task_user_id = $task_query->pluck('user_id')->first();
+
+        if(!$task_user_id) {
+            abort(404);
+        } elseif ($task_user_id != $user_id) {
+            abort(403);
+        } else {
+            Log::info('Task user id ' . $task_user_id);
+            return $task_query;
+        }
+    }
+
+    /**
+     * Show the task list.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
@@ -34,6 +63,11 @@ class HomeController extends Controller
         return view('home', ['name' => $user_name, 'tasks' => $tasks, 'error' => $error]);
     }
 
+    /**
+     * Creates a task for the current user. Returns the index with any errors if relevant.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
     public function addTask(Request $request)
     {
         $task_name = $request->input('task_name');
@@ -52,5 +86,29 @@ class HomeController extends Controller
         }
 
         return $this->index($error);
+    }
+
+    /**
+     * Completes a given task if it exists and belongs to the current user.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function completeTask($id)
+    {
+        $this->getTask($id)->update(['completed' => true]);
+
+        return redirect(url()->route('home') . '#task-' . $id);
+    }
+
+    /**
+     * Deletes a given task if it exists and belongs to the current user.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function deleteTask($id)
+    {
+        $this->getTask($id)->delete();
+
+        return redirect()->route('home');
     }
 }
