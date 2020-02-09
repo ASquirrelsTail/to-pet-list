@@ -17,7 +17,12 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/tasks', 'HomeController@index')->name('home');
-Route::post('/tasks', 'HomeController@addTask')->name('add_task');
-Route::post('/tasks/{id}/complete', 'HomeController@completeTask')->name('complete_task');
-Route::post('/tasks/{id}/delete', 'HomeController@deleteTask')->name('delete_task');
+Route::get('/tasks', 'TaskController@index')->name('home');
+Route::post('/tasks', 'TaskController@addTask')->name('add_task');
+
+Route::get('/tasks/{id}', 'TaskController@task')->name('task');
+Route::post('/tasks/{id}', 'TaskController@editTask')->name('edit_task');
+Route::post('/tasks/{id}/complete', 'TaskController@completeTask')->name('complete_task');
+Route::post('/tasks/{id}/delete', 'TaskController@deleteTask')->name('delete_task');
+
+

@@ -29,6 +29,7 @@
                                     @csrf
                                     <input type="submit" value="Delete!">
                                 </form>
+                                <a href="{{ route('task', $task->id) }}">Edit</a>
                             </li>
                         @empty
                             <p>You need to get some animals to pet!</p>

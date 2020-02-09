@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Auth;
 use DB;
+use Session;
 use Log;
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class TaskController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -42,7 +43,6 @@ class HomeController extends Controller
         } elseif ($task_user_id != $user_id) {
             abort(403);
         } else {
-            Log::info('Task user id ' . $task_user_id);
             return $task_query;
         }
     }
@@ -52,7 +52,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index($error = false)
+    public function index()
     {
         $user = Auth::user();
         $user_id = $user->id;
@@ -60,7 +60,18 @@ class HomeController extends Controller
 
         $tasks = DB::table('tasks')->where('user_id', $user_id)->get();
 
-        return view('home', ['name' => $user_name, 'tasks' => $tasks, 'error' => $error]);
+        return view('home', ['name' => $user_name, 'tasks' => $tasks, 'error' => false]);
+    }
+
+    /**
+     * Show an individual task.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function task($id)
+    {
+        $task = $this->getTask($id)->first();
+        return view('task', ['task' => $task, 'error' => false]);
     }
 
     /**
@@ -83,9 +94,38 @@ class HomeController extends Controller
             $user_id = Auth::user()->id;
 
             DB::insert('INSERT INTO tasks (user_id, task_name) VALUES (?, ?)', [$user_id, $task_name]);
+            Session::flash('status', 'Successfully created task.');
         }
 
-        return $this->index($error);
+        return $this->index()->with('error', $error);
+    }
+
+    /**
+     * Edits a given task if it exists and belongs to the current user.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function editTask(Request $request, $id)
+    {
+        $task_name = $request->input('task_name');
+        $task_name = trim($task_name);
+
+        $completed = (bool) $request->input('completed');
+
+        $error = false;
+
+        if (strlen($task_name) < 1) {
+            $error = 'Please input a value!';
+        } elseif (strlen($task_name) > 100) {
+            $error = 'Please input a value shorter than 100 chars.';
+        } else {
+            $this->getTask($id)->update(['task_name' => $task_name, 'completed' => $completed]);
+            Session::flash('status', 'Successfully updated task.');
+
+            return redirect(url()->route('home') . '#task-' . $id);
+        }
+
+        return $this->task($id)->with('error', $error);
     }
 
     /**
@@ -96,6 +136,7 @@ class HomeController extends Controller
     public function completeTask($id)
     {
         $this->getTask($id)->update(['completed' => true]);
+        Session::flash('status', 'Successfully updated task.');
 
         return redirect(url()->route('home') . '#task-' . $id);
     }
@@ -108,6 +149,7 @@ class HomeController extends Controller
     public function deleteTask($id)
     {
         $this->getTask($id)->delete();
+        Session::flash('status', 'Successfully deleted task.');
 
         return redirect()->route('home');
     }
