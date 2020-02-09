@@ -48,6 +48,23 @@ class TaskController extends Controller
     }
 
     /**
+     * Checks a task exists and belongs to the current user.
+     * Returns a collection for that task.
+     *
+     * @return string
+     */
+    protected function validateTaskName($task_name)
+    {
+        if (strlen($task_name) < 1) {
+            return 'Please input a value!';
+        } elseif (strlen($task_name) > 100) {
+            return 'Please input a value shorter than 100 chars.';
+        } else {
+            return '';
+        }
+    }
+
+    /**
      * Show the task list.
      *
      * @return \Illuminate\Contracts\Support\Renderable
@@ -84,13 +101,9 @@ class TaskController extends Controller
         $task_name = $request->input('task_name');
         $task_name = trim($task_name);
 
-        $error = false;
+        $error = $this->validateTaskName($task_name);
 
-        if (strlen($task_name) < 1) {
-            $error = 'Please input a value!';
-        } elseif (strlen($task_name) > 100) {
-            $error = 'Please input a value shorter than 100 chars.';
-        } else {
+        if (!$error) {
             $user_id = Auth::user()->id;
 
             DB::insert('INSERT INTO tasks (user_id, task_name) VALUES (?, ?)', [$user_id, $task_name]);
@@ -112,13 +125,9 @@ class TaskController extends Controller
 
         $completed = (bool) $request->input('completed');
 
-        $error = false;
+        $error = $this->validateTaskName($task_name);
 
-        if (strlen($task_name) < 1) {
-            $error = 'Please input a value!';
-        } elseif (strlen($task_name) > 100) {
-            $error = 'Please input a value shorter than 100 chars.';
-        } else {
+        if (!$error) {
             $this->getTask($id)->update(['task_name' => $task_name, 'completed' => $completed]);
             Session::flash('status', 'Successfully updated task.');
 
