@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Str;
 
+$herokuDb = parse_url(env('DATABASE_URL', ""));
+
 return [
 
     /*
@@ -32,8 +34,6 @@ return [
     | choice installed on your machine before you begin development.
     |
     */
-
-    $herokuDb = parse_url(env('DATABASE_URL', ""));
 
     'connections' => [
 
@@ -66,15 +66,18 @@ return [
         ],
 
         'pgsql' => [
-                    'driver' => 'pgsql',
-                    'host'     => $herokuDb['host'],
-                    'database' => substr($herokuDb['path'], 1),
-                    'username' => $herokuDb['user'],
-                    'password' => $herokuDb['pass'],
-                    'charset' => 'utf8',
-                    'prefix' => '',
-                    'schema' => 'public',
-                    
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'schema' => 'public',
+            'sslmode' => 'prefer',
         ],
 
         'sqlsrv' => [
