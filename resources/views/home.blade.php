@@ -18,6 +18,7 @@
                                         <b>- DONE </b>
                                     @endif
                                   </span>
+                                  <!-- Task complete/edit/delete drop down -->
                                   <div class="dropdown-menu" aria-labelledby="task-actions-{{ $task->id }}">
                                     @if (!$task->completed)
                                         <form method="post" action="{{ route('complete_task', $task->id) }}">
@@ -48,6 +49,7 @@
                                     placeholder="Name an animal"
                                     class="form-control @if ($error) is-invalid @endif" required>
                                 @if ($error)
+                                {{-- Form validation error --}}
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $error }}</strong>
                                     </span>
@@ -62,6 +64,7 @@
                                 </button>
                             </div>
                         </div>
+                    </form>
                 </div>
             </div>
         </div>

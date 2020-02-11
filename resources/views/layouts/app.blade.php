@@ -80,6 +80,7 @@
         </main>
         
         @if (session('status'))
+        {{-- Render flashed status messages to toasts. --}}
             <div id="toast-container" aria-live="polite" aria-atomic="true">
               <div class="toast" data-delay="1500">
                 <div class="toast-header">

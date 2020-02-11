@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Str;
 
+
+// Parse Heroku Database URL from env var.
 $herokuDb = parse_url(env('DATABASE_URL', ""));
 
 return [

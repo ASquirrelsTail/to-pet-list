@@ -22,6 +22,7 @@ class TaskController extends Controller
 
     /**
      * Checks a task exists and belongs to the current user.
+     * Otherwise aborts with suitable HTTP error code.
      * Returns a collection for that task.
      *
      * @return Illuminate\Database\Eloquent\Collection
@@ -48,8 +49,8 @@ class TaskController extends Controller
     }
 
     /**
-     * Checks a task exists and belongs to the current user.
-     * Returns a collection for that task.
+     * Checks a task name is valid (not empty, less than 100 chars)
+     * Returns an empty string if OK, otherwise the error message.
      *
      * @return string
      */

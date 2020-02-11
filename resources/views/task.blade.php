@@ -18,6 +18,7 @@
                                     placeholder="{{ $task->task_name }}" value="{{ $task->task_name }}"
                                     class="form-control @if ($error) is-invalid @endif" required>
                                 @if ($error)
+                                {{-- Form validation error --}}
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $error }}</strong>
                                     </span>
@@ -57,7 +58,7 @@
 </div>
 
 
-<!-- Modal -->
+<!-- Delete confirmation modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
