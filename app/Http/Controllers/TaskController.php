@@ -20,6 +20,13 @@ class TaskController extends Controller
     {
         $this->middleware('auth');
     }
+
+    protected function checkTaskOnList(TList $list, Task $task)
+    {
+        if ($task->list != $list) {
+            abort(404);
+        }
+    }
     
     /**
      * Display a listing of the resource.
@@ -77,6 +84,7 @@ class TaskController extends Controller
      */
     public function show(TList $list, Task $task)
     {
+        $this->checkTaskOnList($list, $task);
         return redirect(route('lists.show', $list) . '#task-' . $task->id);
     }
 
@@ -88,6 +96,7 @@ class TaskController extends Controller
      */
     public function edit(TList $list, Task $task)
     {
+        $this->checkTaskOnList($list, $task);
         return view('edit-task', ['list'=>$list, 'task'=>$task]);
     }
 
@@ -100,6 +109,7 @@ class TaskController extends Controller
      */
     public function update(Request $request, TList $list, Task $task)
     {
+        $this->checkTaskOnList($list, $task);
         $request->validate(['name'=>'required|max:100']);
 
         $task->fill($request->all());
@@ -119,6 +129,8 @@ class TaskController extends Controller
      */
     public function destroy(TList $list, Task $task)
     {
+        $this->checkTaskOnList($list, $task);
+
         $task->delete();
 
         Session::flash('status', 'Successfully deleted task.');
@@ -128,6 +140,7 @@ class TaskController extends Controller
 
     public function completed(Request $request, TList $list, Task $task)
     {
+        $this->checkTaskOnList($list, $task);
         $task->completed = true;
         $task->save();
 

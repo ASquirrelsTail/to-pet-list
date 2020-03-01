@@ -19,7 +19,7 @@
                     <a href="{{ route('register') }}" class="btn btn-primary btn-lg mt-3 btn-outline-light">Sign up now!</a>
                 @endif
             @else
-                    <a href="{{ route('lists.index') }}" class="btn btn-primary btn-lg mt-3 btn-outline-light">Go to my list</a>
+                    <a href="{{ route('lists.index') }}" class="btn btn-primary btn-lg mt-3 btn-outline-light">Go to my lists</a>
             @endguest
         </div>
     </div>

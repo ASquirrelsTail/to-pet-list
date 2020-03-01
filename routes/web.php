@@ -21,6 +21,7 @@ Route::resource('/lists', 'ListController');
 Route::prefix('/lists/{list}')->group(function() {
 		Route::resource('/tasks', 'TaskController');
 		Route::post('/tasks/{task}', 'TaskController@completed')->name('tasks.completed');
+		Route::resource('/shares', 'ShareController');
 });
 
 

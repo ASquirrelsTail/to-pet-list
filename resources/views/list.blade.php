@@ -42,7 +42,34 @@
                             <p>You need to get some animals to pet!</p>
                         @endforelse
                     </ul>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newTaskModal">
+                        Add a task
+                    </button>
+                    <a href="{{ route('lists.edit', $list) }}" class="btn btn-primary">Edit List</a>
+                    
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newTaskModal" tabindex="-1" role="dialog" aria-labelledby="newTaskModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newTaskModalLabel">New Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('tasks.store', $list) }}" method="POST">
+                    @include('task-form', ['verb'=>'Create new task', 'task'=>null])
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>

@@ -25,6 +25,6 @@ class TList extends Model
 
     public function shares()
     {
-    		return $this->hasMany(Share::class);
+    		return $this->hasMany(Share::class, 'list_id');
     }
 }

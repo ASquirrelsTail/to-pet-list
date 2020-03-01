@@ -101,7 +101,8 @@ class ListController extends Controller
     {
         $request->validate(['name'=>'required|max:100']);
 
-        $list->fill($request->all());
+        $list->name = $request->input('name');
+        $list->public = $request->has('public');
         $list->save();
 
         Session::flash('status', 'Successfully updated list.');
