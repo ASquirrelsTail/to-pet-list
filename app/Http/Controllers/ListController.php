@@ -7,9 +7,8 @@ use Auth;
 use Validator;
 use Session;
 use App\TList;
-use App\Task;
 
-class TaskController extends Controller
+class ListController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -20,15 +19,16 @@ class TaskController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(TList $list)
+    public function index()
     {
-        return redirect(route('lists.show', $list));
+        $user = Auth::user();
+        return view('lists', ['lists'=>$user->lists, 'name'=>$user->name]);
     }
 
     /**
@@ -36,9 +36,9 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(TList $list)
+    public function create()
     {
-        return view('create-task', ['list'=>$list]);
+        return view('create-list');
     }
 
     /**
@@ -47,7 +47,7 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, TList $list)
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name'=>'required|max:100',
@@ -57,16 +57,15 @@ class TaskController extends Controller
             return redirect(route('lists.create'))->withErrors($validator)->withInput();
         }
 
-        $task = new Task;
-        $task->user()->associate(Auth::user());
-        $task->list()->associate($list);
-        $task->name = $request->input('name');
-        $task->completed = $request->has('completed');
-        $task->save();
+        $list = new TList;
+        $list->user()->associate(Auth::user());
+        $list->name = $request->input('name');
+        $list->public = $request->has('public');
+        $list->save();
 
-        Session::flash('status', 'Successfully created task.');
+        Session::flash('status', 'Successfully created list.');
 
-        return redirect(route('lists.show', $list) . '#task-' . $task->id);
+        return redirect(route('lists.show', $list));
     }
 
     /**
@@ -75,9 +74,9 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(TList $list, Task $task)
+    public function show(TList $list)
     {
-        return redirect(route('lists.show', $list) . '#task-' . $task->id);
+        return view('list', ['list'=>$list]);
     }
 
     /**
@@ -86,9 +85,9 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(TList $list, Task $task)
+    public function edit(TList $list)
     {
-        return view('edit-task', ['list'=>$list, 'task'=>$task]);
+        return view('edit-list', ['list'=>$list]);
     }
 
     /**
@@ -98,17 +97,16 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TList $list, Task $task)
+    public function update(Request $request, TList $list)
     {
         $request->validate(['name'=>'required|max:100']);
 
-        $task->fill($request->all());
-        $task->completed = $request->has('completed');
-        $task->save();
+        $list->fill($request->all());
+        $list->save();
 
-        Session::flash('status', 'Successfully updated task.');
+        Session::flash('status', 'Successfully updated list.');
 
-        return $this->show($list, $task);
+        return redirect(route('lists.show', $list));
     }
 
     /**
@@ -117,20 +115,12 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TList $list, Task $task)
+    public function destroy(TList $list)
     {
-        $task->delete();
+        $list->delete();
 
-        Session::flash('status', 'Successfully deleted task.');
+        Session::flash('status', 'Successfully deleted list.');
 
-        return redirect(route('lists.show', $list));
-    }
-
-    public function completed(Request $request, TList $list, Task $task)
-    {
-        $task->completed = true;
-        $task->save();
-
-        return $this->show($list, $task);
+        return redirect(route('lists.index'));
     }
 }

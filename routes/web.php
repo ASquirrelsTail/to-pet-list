@@ -17,12 +17,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/tasks', 'TaskController@index')->name('home');
-Route::post('/tasks', 'TaskController@addTask')->name('add_task');
-
-Route::get('/tasks/{id}', 'TaskController@task')->name('task');
-Route::post('/tasks/{id}', 'TaskController@editTask')->name('edit_task');
-Route::post('/tasks/{id}/complete', 'TaskController@completeTask')->name('complete_task');
-Route::post('/tasks/{id}/delete', 'TaskController@deleteTask')->name('delete_task');
+Route::resource('/lists', 'ListController');
+Route::prefix('/lists/{list}')->group(function() {
+		Route::resource('/tasks', 'TaskController');
+		Route::post('/tasks/{task}', 'TaskController@completed')->name('tasks.completed');
+});
 
 
