@@ -59,12 +59,12 @@ class ShareController extends Controller
         $request->validate([
             'email' => ['required', 'string', 'email', 'max:255',
             function ($attribute, $value, $fail) {
-                if ($value == Auth::user()->email) {
+                if (strtolower($value) == Auth::user()->email) {
                     $fail('You can\'t share this list with yourself!');
                 }
             },
             function ($attribute, $value, $fail) use ($list) {
-                if ($list->shares->where('email', $value)->first()) {
+                if ($list->shares->where('email', strtolower($value))->first()) {
                     $fail('You can\'t share this list with the same person twice!');
                 }
             },]
@@ -73,7 +73,6 @@ class ShareController extends Controller
         $share = new Share;
         $share->list()->associate($list);
         $share->email = strtolower($request->input('email'));
-        $share->user()->associate(User::where('email', $share->email)->first());  // If user email already exists associate that user.
         
         $share->complete = $request->has('complete');
         $share->create = $request->has('create');

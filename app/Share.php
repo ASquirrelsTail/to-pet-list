@@ -20,4 +20,11 @@ class Share extends Model
     {
     		return $this->belongsTo(User::class);
     }
+
+    // Whenever the email is set, associate that emails user with the share, if they exist.
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['email'] = strtolower($value);
+        $this->user()->associate(User::where('email', $this->email)->first());
+    }
 }

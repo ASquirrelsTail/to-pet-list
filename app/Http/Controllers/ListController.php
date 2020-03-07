@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Validator;
 use Session;
+use Gate;
 use App\TList;
 
 class ListController extends Controller
@@ -17,7 +18,7 @@ class ListController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //
     }
 
     /**
@@ -38,6 +39,9 @@ class ListController extends Controller
      */
     public function create()
     {
+        if (Gate::denies('store', TList::class)) {
+            return redirect(route('login'));
+        }
         return view('create-list');
     }
 
@@ -49,6 +53,10 @@ class ListController extends Controller
      */
     public function store(Request $request)
     {
+        if (Gate::denies('store', TList::class)) {
+            return redirect(route('login'));
+        }
+
         $validator = Validator::make($request->all(), [
             'name'=>'required|max:100',
         ]);
@@ -76,6 +84,14 @@ class ListController extends Controller
      */
     public function show(TList $list)
     {
+        if (Gate::denies('show', $list)) {
+            if (!Auth::check()) {
+                return redirect(route('login'));
+            }else{
+                abort(401);
+            }
+        }
+
         return view('list', ['list'=>$list]);
     }
 
@@ -87,6 +103,14 @@ class ListController extends Controller
      */
     public function edit(TList $list)
     {
+        if (Gate::denies('update', $list)) {
+            if (!Auth::check()) {
+                return redirect(route('login'));
+            }else{
+                abort(401);
+            }
+        }
+
         return view('edit-list', ['list'=>$list]);
     }
 
@@ -99,6 +123,14 @@ class ListController extends Controller
      */
     public function update(Request $request, TList $list)
     {
+        if (Gate::denies('update', $list)) {
+            if (!Auth::check()) {
+                return redirect(route('login'));
+            }else{
+                abort(401);
+            }
+        }
+
         $request->validate(['name'=>'required|max:100']);
 
         $list->name = $request->input('name');
@@ -118,6 +150,14 @@ class ListController extends Controller
      */
     public function destroy(TList $list)
     {
+        if (Gate::denies('update', $list)) {
+            if (!Auth::check()) {
+                return redirect(route('login'));
+            }else{
+                abort(401);
+            }
+        }
+
         $list->delete();
 
         Session::flash('status', 'Successfully deleted list.');

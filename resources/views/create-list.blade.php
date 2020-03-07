@@ -8,7 +8,7 @@
                 <div class="card-header">Create a new list</div>
                 <div class="card-body">
                     <form action="{{ route('lists.store') }}" method="POST">
-                		@include('list-form', ['verb'=>'Create new list'])
+                		@include('list-form', ['verb'=>'Create new list', 'list'=>false])
                     </form>
                 </div>
             </div>
