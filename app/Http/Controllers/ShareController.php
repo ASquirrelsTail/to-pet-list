@@ -19,6 +19,7 @@ class ShareController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->authorizeResource(Share::class, 'share');
     }
 
     protected function checkShareOnList(TList $list, Share $share)

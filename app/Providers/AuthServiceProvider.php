@@ -8,6 +8,8 @@ use App\TList;
 use App\Policies\ListPolicy;
 use App\Task;
 use App\Policies\TaskPolicy;
+use App\Share;
+use App\Policies\SharePolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         TList::class => ListPolicy::class,
         Task::class => TaskPolicy::class,
+        Share::class => SharePolicy::class,
     ];
 
     /**
