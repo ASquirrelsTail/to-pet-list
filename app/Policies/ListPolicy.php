@@ -21,13 +21,21 @@ class ListPolicy
         //
     }
 
-    public function store(?User $user)
+    public function create(?User $user)
     {
         return isset($user);
     }
 
-    public function show(?User $user, TList $list)
+    public function viewAny(User $user)
     {
+        return true;
+    }
+
+    public function view(?User $user, ?TList $list)
+    {
+        if (!$list) {
+            return isset($user);
+        }
         return ($list->public || 
                 (isset($user) && 
                     ($list->user_id == $user->id || 
@@ -39,7 +47,7 @@ class ListPolicy
         return $list->user_id == $user->id;
     }
 
-    public function destroy($user, TList $list)
+    public function delete($user, TList $list)
     {
         return $this->update($user, $list);
     }

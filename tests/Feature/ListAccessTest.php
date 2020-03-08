@@ -15,6 +15,23 @@ class ListAccessTest extends TestCase
 {
     use RefreshDatabase;
     /**
+     * Checks only a registered user can view their lists.
+     *
+     * @return void
+     */
+    public function testOnlyRegisteredUserCanViewLists()
+    {
+        
+        $user = factory(User::class)->create();
+
+        $response = $this->get(route('lists.index'));
+        $response->assertStatus(403);
+
+        $response = $this->actingAs($user)->get(route('lists.index'));
+        $response->assertStatus(200);
+    }
+
+    /**
      * Checks only a registered user can create a list.
      *
      * @return void
@@ -25,11 +42,11 @@ class ListAccessTest extends TestCase
         $user = factory(User::class)->create();
 
         $response = $this->get(route('lists.create'));
-        $response->assertRedirect(route('login'));
+        $response->assertStatus(403);
 
         $response = $this->post(route('lists.store'), ['name'=>'Guest list']);
         $this->assertDatabaseMissing('lists', ['name'=>'Guest list']);
-        $response->assertRedirect(route('login'));
+        $response->assertStatus(403);
 
         $response = $this->actingAs($user)->get(route('lists.create'));
         $response->assertStatus(200);
@@ -55,19 +72,19 @@ class ListAccessTest extends TestCase
         $list = factory(TList::class)->create(['user_id' => $author]);
 
         $response = $this->get(route('lists.edit', $list));
-        $response->assertRedirect(route('login'));
+        $response->assertStatus(403);
 
         $response = $this->post(route('lists.update', $list), ['name'=>'Guest updated list', '_method'=>'PATCH']);
         $this->assertNotEquals($list->refresh()->name, 'Guest updated list');
-        $response->assertRedirect(route('login'));
+        $response->assertStatus(403);
 
         $response = $this->actingAs($other_user)->get(route('lists.edit', $list));
-        $response->assertStatus(401);
+        $response->assertStatus(403);
 
         $response = $this->actingAs($other_user)->post(route('lists.update', $list),
             ['name'=>'Another updated list', '_method'=>'PATCH']);
         $this->assertNotEquals($list->refresh()->name, 'Another updated list');
-        $response->assertStatus(401);
+        $response->assertStatus(403);
 
         $response = $this->actingAs($author)->get(route('lists.edit', $list));
         $response->assertStatus(200);
@@ -92,10 +109,10 @@ class ListAccessTest extends TestCase
         $list = factory(TList::class)->create(['user_id' => $author]);
 
         $response = $this->get(route('lists.show', $list));
-        $response->assertRedirect(route('login'));
+        $response->assertStatus(403);
 
         $response = $this->actingAs($other_user)->get(route('lists.show', $list));
-        $response->assertStatus(401);
+        $response->assertStatus(403);
 
         $response = $this->actingAs($author)->get(route('lists.show', $list));
         $response->assertStatus(200);
@@ -141,10 +158,10 @@ class ListAccessTest extends TestCase
         factory(Share::class)->create(['email' => $sharee->email, 'list_id' => $list]);
 
         $response = $this->get(route('lists.show', $list));
-        $response->assertRedirect(route('login'));
+        $response->assertStatus(403);
 
         $response = $this->actingAs($other_user)->get(route('lists.show', $list));
-        $response->assertStatus(401);  //Unauthorised
+        $response->assertStatus(403);
 
         $response = $this->actingAs($sharee)->get(route('lists.show', $list));
         $response->assertStatus(200);

@@ -19,6 +19,7 @@ class TaskController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->authorizeResource(Task::class, 'task');
     }
 
     protected function checkTaskOnList(TList $list, Task $task)
@@ -61,7 +62,7 @@ class TaskController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect(route('lists.create'))->withErrors($validator)->withInput();
+            return redirect(route('tasks.create', $list))->withErrors($validator)->withInput();
         }
 
         $task = new Task;
@@ -84,8 +85,7 @@ class TaskController extends Controller
      */
     public function show(TList $list, Task $task)
     {
-        $this->checkTaskOnList($list, $task);
-        return redirect(route('lists.show', $list) . '#task-' . $task->id);
+        return redirect(route('lists.show', $task->list) . '#task-' . $task->id);
     }
 
     /**
@@ -96,7 +96,6 @@ class TaskController extends Controller
      */
     public function edit(TList $list, Task $task)
     {
-        $this->checkTaskOnList($list, $task);
         return view('edit-task', ['list'=>$list, 'task'=>$task]);
     }
 
@@ -109,7 +108,6 @@ class TaskController extends Controller
      */
     public function update(Request $request, TList $list, Task $task)
     {
-        $this->checkTaskOnList($list, $task);
         $request->validate(['name'=>'required|max:100']);
 
         $task->fill($request->all());
@@ -129,8 +127,6 @@ class TaskController extends Controller
      */
     public function destroy(TList $list, Task $task)
     {
-        $this->checkTaskOnList($list, $task);
-
         $task->delete();
 
         Session::flash('status', 'Successfully deleted task.');
@@ -140,7 +136,7 @@ class TaskController extends Controller
 
     public function completed(Request $request, TList $list, Task $task)
     {
-        $this->checkTaskOnList($list, $task);
+        $this->authorize('complete', $task);
         $task->completed = true;
         $task->save();
 
