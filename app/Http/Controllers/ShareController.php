@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Session;
 use Auth;
+use Illuminate\Support\Facades\Mail;
+
 use App\TList;
 use App\Share;
 use App\User;
+use App\Mail\ListShared;
 
 class ShareController extends Controller
 {
@@ -82,6 +85,8 @@ class ShareController extends Controller
         $share->save();
 
         Session::flash('status', 'Successfully shared list.');
+
+        Mail::to($share->email)->send(new ListShared(Auth::user(), $share->user));
 
         return redirect(route('lists.show', $list));
     }
