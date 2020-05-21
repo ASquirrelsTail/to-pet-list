@@ -42,4 +42,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(TList::class);
     }
+
+    public function shared_lists()
+    {
+        return $this->belongsToMany(TList::class, 'shares', 'user_id', 'list_id');
+    }
 }

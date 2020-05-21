@@ -29,7 +29,7 @@ class ListController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return view('lists', ['lists'=>$user->lists, 'name'=>$user->name]);
+        return view('lists', ['lists'=>$user->lists,'shared_lists'=>$user->shared_lists, 'name'=>$user->name]);
     }
 
     /**

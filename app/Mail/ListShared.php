@@ -29,6 +29,7 @@ class ListShared extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.list-share')->with(['author'=>$this->author, 'sharee'=>$this->sharee]);
+        return $this->subject('You\'ve been invited to a To Pet List')
+            ->view('emails.list-share')->with(['author'=>$this->author, 'sharee'=>$this->sharee]);
     }
 }
