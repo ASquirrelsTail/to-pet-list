@@ -77,7 +77,7 @@ class ListController extends Controller
      */
     public function show(TList $list)
     {
-        return view('list', ['list'=>$list]);
+        return view('list', ['list'=>$list, 'tasks'=>$list->tasks()->orderBy('position', 'asc')->get()]);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\User;
 use App\Share;
+use App\Task;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,6 +42,14 @@ class AppServiceProvider extends ServiceProvider
                 $share->user()->associate($user);
                 $share->save();
             });
+        });
+
+        Task::created(function($task) {
+            $last_task = $task->list->tasks()->orderBy('position', 'desc')->first();
+            if ($last_task) {
+                $task->position = $last_task->position + 1;
+                $task->save();
+            }
         });
     }
 }

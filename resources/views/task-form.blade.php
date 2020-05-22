@@ -1,6 +1,6 @@
 @csrf
 @if ($task)
-		{{method_field('PATCH')}}
+    {{method_field('PATCH')}}
 @endif
 <div class="form-group row">
     <label for="task_name" class="col-md-4 col-form-label text-md-right">Name the animal to pet:</label>
@@ -16,6 +16,21 @@
         @enderror
     </div>
 </div>
+@if ($task)
+<div class="form-group row">
+    <label for="new_position" class="col-md-4 col-form-label text-md-right">Position to move task to:</label>
+
+    <div class="col-md-6">
+        <input type="text" name="new_position" id="new_position" min="0" 
+            class="form-control @error('new_position') is-invalid @enderror">
+        @error('new_position')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+</div>
+@endif
 <div class="form-group row">
     <div class="col-md-6 offset-md-4">
         <div class="form-check">

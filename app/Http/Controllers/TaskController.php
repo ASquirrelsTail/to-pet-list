@@ -108,7 +108,7 @@ class TaskController extends Controller
      */
     public function update(Request $request, TList $list, Task $task)
     {
-        $request->validate(['name'=>'required|max:100']);
+        $request->validate(['name'=>'required|max:100', 'new_position'=>'integer|min:0']);
 
         $task->fill($request->all());
         $task->completed = $request->has('completed');

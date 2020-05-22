@@ -11,11 +11,11 @@
                 </div>
                 <div class="card-body">
                     <ul class="task-list">
-                        @forelse ($list->tasks as $task)
+                        @forelse ($tasks as $task)
                             <li id="task-{{ $task->id }}" class="task @if ($task->completed) task-completed @endif">
                                 <div class="dropdown">
                                   <span tabindex="0" class="dropdown-toggle" id="task-actions-{{ $task->id }}" aria-role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{ $task->name }} 
+                                    {{ $task->position }} {{ $task->name }} 
                                     @if ($task->completed)
                                         <b>- DONE </b>
                                     @endif
