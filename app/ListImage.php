@@ -14,4 +14,8 @@ class ListImage extends Model
     {
     	  return $this->belongsTo(TList::class, 'list_id');
     }
+
+    public function getUrlAttribute() {
+    	  return route('lists.image', $this->list) . '?' . $this->updated_at->format('Y-m-d-H-i-s');
+    }
 }

@@ -44,7 +44,7 @@ class ListController extends Controller
 
         $image->encode('jpg', 75);
 
-        $file_path = 'image-uploads/' . uniqid() . 'jpg';
+        $file_path = config('images.storage') . uniqid() . '.jpg';
 
         Storage::put($file_path, $image->getEncoded());
 
@@ -82,7 +82,7 @@ class ListController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'=>'required|max:100',
-            'image'=>'mimes:jpeg,png|dimensions:min_width=600,min:height=200|max:2000',
+            'image'=>'mimes:jpeg,png|dimensions:min_width='.config('images.width').',min:height='.config('images.height').'|max:2000',
         ]);
 
         if ($validator->fails()) {
@@ -141,7 +141,7 @@ class ListController extends Controller
     public function update(Request $request, TList $list)
     {
         $request->validate(['name'=>'required|max:100',
-                            'image'=>'mimes:jpeg,png|dimensions:min_width=600,min:height=200|max:2000',]);
+                            'image'=>'mimes:jpeg,png|dimensions:min_width='.config('images.width').',min:height='.config('images.height').'|max:2000',]);
 
         $list->name = $request->input('name');
         $list->public = $request->has('public');

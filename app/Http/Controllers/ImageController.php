@@ -17,7 +17,7 @@ class ImageController extends Controller
         }
         if (config('filesystems.default') == 'local') {
             try {
-                return response()->file(storage_path('app/' . $list->image->path));
+                return response()->file(storage_path('app/' . $list->image->path), ['cache-control'=>config('images.cache-control')]);
             } catch (FileNotFoundException $e) {
                 abort(404);
             }

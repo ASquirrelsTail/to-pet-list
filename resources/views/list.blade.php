@@ -11,7 +11,7 @@
                 </div>
                 <div class="card-body">
                     @if ($list->image)
-                    <img src="{{ route('lists.image', $list) }}" alt="Image for {{ $list->name }}" class="img-fluid">
+                    <img src="{{ $list->image->url }}" alt="Image for {{ $list->name }}" class="img-fluid">
                     @endif
                     <ul class="task-list">
                         @forelse ($tasks as $task)
