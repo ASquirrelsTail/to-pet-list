@@ -1,4 +1,13 @@
 @extends('layouts.app')
+@section('header')
+@if ($list->public)
+    <meta property="og:url" content="{{ Request::url() }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ $list->name }} by {{ $list->user->name }}" />
+    <meta property="og:description" content="See which animals {{ $list->user->name }} has on their to pet list!" />
+    <meta property="og:image" content="{{ route('lists.image', $list) }}" />
+@endif
+@endsection
 
 @section('content')
 <div class="container">
