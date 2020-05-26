@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">Edit {{ $list->name }}</div>
                 <div class="card-body">
-                    <form action="{{ route('lists.update', $list) }}" method="POST">
+                    <form action="{{ route('lists.update', $list) }}" method="POST" enctype="multipart/form-data">
                 		@include('list-form', ['verb'=>'Update list'])
                     </form>
                     <form action="{{ route('lists.destroy', $list) }}" method="POST">

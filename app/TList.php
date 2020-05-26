@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\User;
 use App\Task;
 use App\Share;
+use App\Image;
 
 class TList extends Model
 {
@@ -26,5 +27,10 @@ class TList extends Model
     public function shares()
     {
     		return $this->hasMany(Share::class, 'list_id');
+    }
+
+    public function image()
+    {
+        return $this->hasOne(Image::class, 'list_id');
     }
 }

@@ -51,7 +51,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('lists.store') }}" method="POST">
+                <form action="{{ route('lists.store') }}" method="POST" enctype="multipart/form-data">
                     @include('list-form', ['verb'=>'Create new list', 'list'=>null])
                 </form>
             </div>

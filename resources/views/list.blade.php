@@ -10,12 +10,15 @@
                     By {{ $list->user->name }}
                 </div>
                 <div class="card-body">
+                    @if ($list->image)
+                    <img src="{{ route('lists.image', $list) }}" alt="Image for {{ $list->name }}" class="img-fluid">
+                    @endif
                     <ul class="task-list">
                         @forelse ($tasks as $task)
                             <li id="task-{{ $task->id }}" class="task @if ($task->completed) task-completed @endif">
                                 <div class="dropdown">
                                   <span tabindex="0" class="dropdown-toggle" id="task-actions-{{ $task->id }}" aria-role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{ $task->position }} {{ $task->name }} 
+                                    {{ $task->name }} 
                                     @if ($task->completed)
                                         <b>- DONE </b>
                                     @endif

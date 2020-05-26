@@ -17,6 +17,9 @@
     </div>
 </div>
 <div class="form-group row">
+    <input type="file" name="image" />
+</div>
+<div class="form-group row">
     <div class="col-md-6 offset-md-4">
         <div class="form-check">
             <input class="form-check-input" type="checkbox" name="public" id="public" {{ old('public', $list ? $list->public : false) ? 'checked' : '' }}>

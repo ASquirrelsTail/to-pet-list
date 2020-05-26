@@ -7,7 +7,9 @@ use Auth;
 use Validator;
 use Session;
 use Gate;
+use Storage;
 use App\TList;
+use App\Image;
 
 class ListController extends Controller
 {
@@ -58,11 +60,20 @@ class ListController extends Controller
             return redirect(route('lists.create'))->withErrors($validator)->withInput();
         }
 
+
+
         $list = new TList;
         $list->user()->associate(Auth::user());
         $list->name = $request->input('name');
         $list->public = $request->has('public');
         $list->save();
+
+        if ($request->hasFile('image')) {
+            $image = new Image;
+            $image->list()->associate($list);
+            $image->path = $request->image->store('image-uploads');
+            $image->save();
+        }
 
         Session::flash('status', 'Successfully created list.');
 
@@ -105,6 +116,18 @@ class ListController extends Controller
         $list->name = $request->input('name');
         $list->public = $request->has('public');
         $list->save();
+
+        if ($request->hasFile('image')) {
+            if ($list->image) {
+                $image = $list->image;
+                Storage::delete($image->path);
+            } else {
+                $image = new Image;
+            }
+            
+            $image->path = $request->image->store('image-uploads');
+            $image->save();
+        }
 
         Session::flash('status', 'Successfully updated list.');
 
