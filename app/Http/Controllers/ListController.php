@@ -82,6 +82,7 @@ class ListController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'=>'required|max:100',
+            'image'=>'mimes:jpeg,png|dimensions:min_width=600,min:height=200|max:2000',
         ]);
 
         if ($validator->fails()) {
@@ -139,7 +140,8 @@ class ListController extends Controller
      */
     public function update(Request $request, TList $list)
     {
-        $request->validate(['name'=>'required|max:100']);
+        $request->validate(['name'=>'required|max:100',
+                            'image'=>'mimes:jpeg,png|dimensions:min_width=600,min:height=200|max:2000',]);
 
         $list->name = $request->input('name');
         $list->public = $request->has('public');

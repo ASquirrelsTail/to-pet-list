@@ -17,7 +17,17 @@
     </div>
 </div>
 <div class="form-group row">
-    <input type="file" name="image" />
+    <label for="list_image" class="col-md-4 col-form-label text-md-right">List Image:</label>
+
+    <div class="col-md-6">
+        <input type="file" name="image" id="list_image" accept="image/*"
+            class="form-control @error('image') is-invalid @enderror">
+        @error('image')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
 </div>
 <div class="form-group row">
     <div class="col-md-6 offset-md-4">
