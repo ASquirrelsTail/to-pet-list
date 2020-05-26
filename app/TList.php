@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\User;
 use App\Task;
 use App\Share;
-use App\Image;
+use App\ListImage;
 
 class TList extends Model
 {
@@ -31,6 +31,6 @@ class TList extends Model
 
     public function image()
     {
-        return $this->hasOne(Image::class, 'list_id');
+        return $this->hasOne(ListImage::class, 'list_id');
     }
 }

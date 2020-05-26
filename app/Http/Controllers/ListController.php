@@ -8,8 +8,10 @@ use Validator;
 use Session;
 use Gate;
 use Storage;
+use Intervention\Image\Facades\Image;
+use Intervention\Image\Exception\NotReadableException;
 use App\TList;
-use App\Image;
+use App\ListImage;
 
 class ListController extends Controller
 {
@@ -21,6 +23,32 @@ class ListController extends Controller
     public function __construct()
     {
         $this->authorizeResource(TList::class, 'list');
+    }
+
+    protected function processImage($uploaded_file)
+    {        
+        $image = Image::make($uploaded_file);
+        $image->fit(config('images.width'), config('images.height'), 
+                    function ($constraint) {
+                        $constraint->upsize();
+                    });
+
+        if (config('images.watermark')) {
+            try {
+                $image->insert(base_path() . config('images.watermark'),
+                               'bottom-left', 10, 10);
+            } catch (NotReadableException $e) {
+
+            }
+        }
+
+        $image->encode('jpg', 75);
+
+        $file_path = 'image-uploads/' . uniqid() . 'jpg';
+
+        Storage::put($file_path, $image->getEncoded());
+
+        return $file_path;
     }
 
     /**
@@ -69,9 +97,9 @@ class ListController extends Controller
         $list->save();
 
         if ($request->hasFile('image')) {
-            $image = new Image;
+            $image = new ListImage;
             $image->list()->associate($list);
-            $image->path = $request->image->store('image-uploads');
+            $image->path = $this->processImage($request->file('image'));
             $image->save();
         }
 
@@ -122,10 +150,11 @@ class ListController extends Controller
                 $image = $list->image;
                 Storage::delete($image->path);
             } else {
-                $image = new Image;
+                $image = new ListImage;
+                $image->list()->associate($list);
             }
             
-            $image->path = $request->image->store('image-uploads');
+            $image->path = $this->processImage($request->file('image'));
             $image->save();
         }
 
