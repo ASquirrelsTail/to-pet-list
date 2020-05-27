@@ -8,6 +8,7 @@ use Validator;
 use Session;
 use Gate;
 use Storage;
+use Response;
 use Intervention\Image\Facades\Image;
 use Intervention\Image\Exception\NotReadableException;
 use App\TList;
@@ -117,7 +118,7 @@ class ListController extends Controller
      */
     public function show(TList $list)
     {
-        $response = view('list', ['list'=>$list, 'tasks'=>$list->tasks()->orderBy('position', 'asc')->get()]);
+        $response = Response::view('list', ['list'=>$list, 'tasks'=>$list->tasks()->orderBy('position', 'asc')->get()]);
         if ($list->public && !Auth::user() && config('app.push_header')) {
             $response->header('Link', config('app.push_header'));
         }
