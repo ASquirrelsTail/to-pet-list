@@ -30,6 +30,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        if(config('app.env') === 'production') {
+            \URL::forceScheme('https');
+        }
+        
         User::created(function($user) {
             Share::where('email', $user->email)->each(function ($share, $key) use ($user) {
                 $share->user()->associate($user);

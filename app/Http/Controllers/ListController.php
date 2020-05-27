@@ -117,7 +117,11 @@ class ListController extends Controller
      */
     public function show(TList $list)
     {
-        return view('list', ['list'=>$list, 'tasks'=>$list->tasks()->orderBy('position', 'asc')->get()]);
+        $response = view('list', ['list'=>$list, 'tasks'=>$list->tasks()->orderBy('position', 'asc')->get()]);
+        if ($list->public && !Auth::user() && config('app.push_header')) {
+            $response->header('Link', config('app.push_header'));
+        }
+        return $response;
     }
 
     /**

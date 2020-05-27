@@ -12,7 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $response = Response::view('welcome');
+    if (config('app.push_header')) {
+        $response->header('Link', config('app.push_header'));
+    }
+    return $response;
 });
 
 Auth::routes();

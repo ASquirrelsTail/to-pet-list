@@ -125,6 +125,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | HTTP2 Server Push Header
+    |--------------------------------------------------------------------------
+    |
+    | Files to push using HTTP2 push
+    |
+    */
+
+    'push_header' => env('PUSH_HEADER', '</css/app.css>; rel=preload; as=style, <https://fonts.gstatic.com>; rel=preconnect, </images/logo.png>; rel=preload; as=image'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |
