@@ -16,6 +16,13 @@
         @enderror
     </div>
 </div>
+<div class="row">
+    <div id="image-container" class="col-12">
+        @if ($list && $list->image)
+        <img src="{{ $list->image->url }}" alt="Image for {{ $list->name }}" class="img-fluid" id="list_current_image">
+        @endif
+    </div>
+</div>
 <div class="form-group row">
     <label for="list_image" class="col-md-4 col-form-label text-md-right">List Image:</label>
 

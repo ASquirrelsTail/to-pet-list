@@ -7,13 +7,14 @@
 require('./bootstrap');
 
 $(function () {
-    $('.toast').toast('show');
-
-    // Make span dropdown toggles accessible to screen readers
-    $('span.dropdown-toggle').on('keydown', function(e) {
-      if (e.key === ' ' || e.key === 'Enter') $(e.target).trigger('click');
-    });
+  $('.toast').toast('show');
 });
+
+require('./lists.js');
+require('./tasks.js');
+require('./shares.js');
+
+
 
 // window.Vue = require('vue');
 

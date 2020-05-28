@@ -10,6 +10,7 @@ class Task extends Model
 {
 		protected $fillable = ['name', 'completed', 'new_position'];
 		protected $casts = ['completed'=> 'boolean'];
+		protected $hidden = ['user', 'list'];
 
 		public function user()
 		{

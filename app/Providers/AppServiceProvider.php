@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
 
         Task::created(function($task) {
             $last_task = $task->list->tasks()->orderBy('position', 'desc')->first();
-            if ($last_task) {
+            if ($last_task && !$task->position) {
                 $task->position = $last_task->position + 1;
                 $task->save();
             }

@@ -1,5 +1,6 @@
 #toast-container {
 	display: flex;
+	flex-direction: column;
 	position: fixed;
 	bottom: 0;
 	left: 0;
@@ -43,22 +44,38 @@
 	text-align: center;
 }
 
+#task-list {
+	list-style: none;
+	padding-left: 2em;
+}
+
 .task {
-	.dropdown-toggle {
-		cursor: pointer;
+	position: relative;
+	
+	&:before {
+		display: block;
+		position: absolute;
+		height: 0.2em;
+		width: 0.2em;
+		top: 0.6em;
+		left: -0.95em;
+		content: "";
+		background-color: black;
+		border-radius: 0.1em;
 	}
-	.dropdown-menu {
-		padding: 0;
-		margin: 0;
-		border: none;
 
-		.btn {
-			border-radius: 0;
-			width: 100%;
-		}
-
-		form:last-child .btn{
-			border-radius: 0 0 0.25rem 0.25rem;
-		}
+	&.task-completed:before {
+		height: 1em;
+		width: 1em;
+		left: -1.3em;
+		top: 0.2em;
+		background-color: unset;
+		border-radius: 0;
+		background-image: url('/images/tick.svg');
+		background-size: cover;
 	}
+}
+
+.task-name {
+	display: inline;
 }

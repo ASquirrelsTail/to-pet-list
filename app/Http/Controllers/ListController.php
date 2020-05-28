@@ -118,7 +118,26 @@ class ListController extends Controller
      */
     public function show(TList $list)
     {
-        $response = Response::view('list', ['list'=>$list, 'tasks'=>$list->tasks()->orderBy('position', 'asc')->get()]);
+        if (Auth::user() && Auth::user() != $list->user) {
+            $shared = $list->shares()
+                                 ->where('user_id', Auth::user()->id)
+                                 ->select('create', 'complete', 'delete', 'update')
+                                 ->first();
+            if ($shared) {
+                $permissions = $shared->getAttributes();
+                foreach($permissions as $key => $value) {
+                    $permissions[$key] = (bool) $value;
+                }
+            } else {
+                $permissions = ['create' => false, 'complete' => false, 'delete' => false, 'update' => false];
+            }
+        } else {
+            $permissions = ['create' => true, 'complete' => true, 'delete' => true, 'update' => true];
+        }
+
+        $response = Response::view('list', ['list'=>$list, 
+                                            'tasks'=>$list->tasks()->orderBy('position', 'asc')->get(),
+                                            'permissions'=>$permissions]);
         if ($list->public && !Auth::user() && config('app.push_header')) {
             $response->header('Link', config('app.push_header'));
         }

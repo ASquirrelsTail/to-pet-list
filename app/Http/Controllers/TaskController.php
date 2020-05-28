@@ -57,21 +57,21 @@ class TaskController extends Controller
      */
     public function store(Request $request, TList $list)
     {
-        $validator = Validator::make($request->all(), [
-            'name'=>'required|max:100',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect(route('tasks.create', $list))->withErrors($validator)->withInput();
-        }
+        $request->validate(['name'=>'required|max:100']);
 
         $task = new Task;
         $task->user()->associate(Auth::user());
         $task->list()->associate($list);
         $task->name = $request->input('name');
         $task->completed = $request->has('completed');
+        if ($request->has('priority')) {
+            $task->new_position = 0;
+        }
         $task->save();
 
+        if ($request->isJson()) {
+            return $task;
+        }
         Session::flash('status', 'Successfully created task.');
 
         return redirect(route('lists.show', $list) . '#task-' . $task->id);
@@ -112,7 +112,12 @@ class TaskController extends Controller
 
         $task->fill($request->all());
         $task->completed = $request->has('completed');
+        if ($request->has('priority')) {
+            $task->new_position = 0;
+        }
         $task->save();
+
+        if ($request->isJson()) return response()->noContent();
 
         Session::flash('status', 'Successfully updated task.');
 
@@ -125,9 +130,11 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TList $list, Task $task)
+    public function destroy(Request $request, TList $list, Task $task)
     {
         $task->delete();
+
+        if ($request->isJson()) return response()->noContent();
 
         Session::flash('status', 'Successfully deleted task.');
 
@@ -140,6 +147,7 @@ class TaskController extends Controller
         $task->completed = true;
         $task->save();
 
+        if ($request->isJson()) return response()->noContent();
         return $this->show($list, $task);
     }
 }

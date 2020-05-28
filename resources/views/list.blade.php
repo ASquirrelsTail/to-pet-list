@@ -7,6 +7,9 @@
     <meta property="og:description" content="See which animals {{ $list->user->name }} has on their to pet list!" />
     <meta property="og:image" content="{{ route('lists.image', $list) }}" />
 @endif
+<script>
+    window.permissions = @json($permissions);
+</script>
 @endsection
 
 @section('content')
@@ -22,61 +25,39 @@
                     @if ($list->image)
                     <img src="{{ $list->image->url }}" alt="Image for {{ $list->name }}" class="img-fluid">
                     @endif
-                    <ul class="task-list">
+                    <ul id="task-list">
                         @forelse ($tasks as $task)
-                            <li id="task-{{ $task->id }}" class="task @if ($task->completed) task-completed @endif">
-                                <div class="dropdown">
-                                  <span tabindex="0" class="dropdown-toggle" id="task-actions-{{ $task->id }}" aria-role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{ $task->name }} 
-                                    @if ($task->completed)
-                                        <b>- DONE </b>
-                                    @endif
-                                  </span>
-                                  <!-- Task complete/edit/delete drop down -->
-                                  <div class="dropdown-menu" aria-labelledby="task-actions-{{ $task->id }}">
-                                    @if (!$task->completed)
-                                        <form method="post" action="{{ route('tasks.completed', ['list'=>$list, 'task'=>$task]) }}">
-                                            @csrf
-                                            <button type="submit" class="btn btn-success">Done!</button>
-                                        </form>
-                                    @endif
-                                    <a href="{{ route('tasks.edit', ['list'=>$list, 'task'=>$task]) }}" class="btn btn-outline-primary btn-edit">Edit</a>
-                                    <form method="post" action="{{ route('tasks.destroy', ['list'=>$list, 'task'=>$task]) }}">
-                                        @csrf
-                                        {{method_field('DELETE')}}
-                                        <button type="submit" class="btn btn-danger">Delete</button>
-                                    </form>
-                                  </div>
-                                </div>
-                                
+                            <li id="task-{{ $task->id }}" data-task-id="{{ $task->id }}"
+                                    data-task-path="{{ route('tasks.show', ['list'=>$list, 'task'=>$task]) }}"
+                                    class="task @if ($task->completed) task-completed @endif">
+                                <span class="task-name">{{ $task->name }}</span>
                             </li>
                         @empty
-                            <p>You need to get some animals to pet!</p>
+                            <p class="empty">You need to get some animals to pet!</p>
                         @endforelse
                     </ul>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newTaskModal">
-                        Add a task
-                    </button>
+                    @can('update', $list)
                     <a href="{{ route('lists.edit', $list) }}" class="btn btn-primary">Edit List</a>
-                    
+                    @endcan
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="newTaskModal" tabindex="-1" role="dialog" aria-labelledby="newTaskModalLabel"
+@if ($permissions['create'] || $permissions['update'])
+<div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="newTaskModalLabel">New Task</h5>
+                <h5 class="modal-title" id="taskModalLabel">New Task</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('tasks.store', $list) }}" method="POST">
+                <form action="{{ route('tasks.store', $list) }}" method="POST" id="task_form">
                     @include('task-form', ['verb'=>'Create new task', 'task'=>null])
                 </form>
             </div>
@@ -86,4 +67,5 @@
         </div>
     </div>
 </div>
+@endif
 @endsection

@@ -9,9 +9,6 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ mix('js/app.js') }}" defer></script>
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
@@ -19,7 +16,11 @@
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 
+    <!-- Additional Header Tags from template -->
     @yield('header')
+
+    <!-- Scripts -->
+    <script src="{{ mix('js/app.js') }}" defer></script>
 </head>
 <body>
     <div id="app">
@@ -81,22 +82,24 @@
             @yield('content')
         </main>
         
+        
+        <div id="toast-container" aria-live="polite" aria-atomic="true">
         @if (session('status'))
         {{-- Render flashed status messages to toasts. --}}
-            <div id="toast-container" aria-live="polite" aria-atomic="true">
-              <div class="toast" data-delay="1500">
-                <div class="toast-header">
-                  <strong class="mr-auto">{{ config('app.name', 'Laravel') }}</strong>
-                  <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="toast-body">
-                  {{ session('status') }}
-                </div>
-              </div>
+          <div class="toast" data-delay="3000">
+            <div class="toast-header">
+              <strong class="mr-auto">{{ config('app.name', 'Laravel') }}</strong>
+              <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
+            <div class="toast-body">
+              {{ session('status') }}
+            </div>
+          </div>
         @endif
+        </div>
+        
     </div>
 </body>
 </html>
