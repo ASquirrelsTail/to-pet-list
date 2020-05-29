@@ -5,8 +5,9 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Shareing list {{ $list->name }}</div>
+                <div class="card-header">Sharing list {{ $list->name }}</div>
                 <div class="card-body">
+                    <p>Tell us who you want to share your list with and we'll send them an email inviting them to join you!</p>
                     <form action="{{ route('shares.store', $list) }}" method="POST">
                 		@csrf
                         <div class="form-group row">
@@ -21,7 +22,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-md-6 offset-md-4">
+                            <div class="col-12 col-md-10 offset-md-2">
                                 @include('share-form', ['share'=>null])
                             </div>
                         </div>

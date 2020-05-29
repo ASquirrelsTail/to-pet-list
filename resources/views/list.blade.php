@@ -19,12 +19,13 @@
             <div class="card">
                 <div class="card-header">
                     <h1>{{ $list->name }}</h1>
+                    @can('update', $list)
+                    <a href="{{ route('lists.edit', $list) }}" id="edit-list" class="btn btn-primary">Edit List</a>
+                    @else
                     By {{ $list->user->name }}
+                    @endcan
                 </div>
                 <div class="card-body">
-                    @if ($list->image)
-                    <img src="{{ $list->image->url }}" alt="Image for {{ $list->name }}" class="img-fluid">
-                    @endif
                     <ul id="task-list">
                         @forelse ($tasks as $task)
                             <li id="task-{{ $task->id }}" data-task-id="{{ $task->id }}"
@@ -36,9 +37,6 @@
                             <p class="empty">You need to get some animals to pet!</p>
                         @endforelse
                     </ul>
-                    @can('update', $list)
-                    <a href="{{ route('lists.edit', $list) }}" class="btn btn-primary">Edit List</a>
-                    @endcan
                 </div>
             </div>
         </div>

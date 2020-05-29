@@ -12,7 +12,6 @@ $(function () {
 
 require('./lists.js');
 require('./tasks.js');
-require('./shares.js');
 
 
 

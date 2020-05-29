@@ -27,4 +27,14 @@ class Share extends Model
         $this->attributes['email'] = strtolower($value);
         $this->user()->associate(User::where('email', $this->email)->first());
     }
+
+    public function getCanAttribute() {
+        $permissions = array_filter(['complete', 'create', 'update', 'delete'], function ($permission) {
+            return $this[$permission];
+        });
+
+        if (sizeof($permissions) > 1) return join(', ', array_slice($permissions, 0, -1)) . ' and ' . end($permissions);
+        elseif (sizeof($permissions) == 0) return $permissions[0];
+        else return false;
+    }
 }

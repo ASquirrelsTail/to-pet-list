@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">Create a new list</div>
                 <div class="card-body">
-                    <form action="{{ route('lists.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('lists.store') }}" method="POST" enctype="multipart/form-data" id="list_form">
                 		@include('list-form', ['verb'=>'Create new list', 'list'=>false])
                     </form>
                 </div>

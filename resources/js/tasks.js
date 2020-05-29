@@ -1,10 +1,11 @@
 $(function () {
-  if (window.permissions.create) {
+  if (window.permissions && window.permissions.create) {
+    var createButtonDiv = $('<div class="col-12 text-center"></div>');
     var createButton = $('<button type="button" class="btn btn-primary">Add a task</button>');
     createButton.on('click', function () {
       openTaskModal();
     });
-    $('#task-list').after(createButton);
+    $('#task-list').after(createButtonDiv.append(createButton));
   }
 
   $('.task').each(function () {
@@ -18,7 +19,7 @@ function mountTask(taskElement) {
     $(this).remove();
   });
   if (!taskElement.hasClass('task-completed') && window.permissions.complete) {
-    var completeButton = $('<button class="task-complete-button">Complete</button>');
+    var completeButton = $('<button class="task-complete-button btn btn-sm btn-success">Complete</button>');
     completeButton.on('click', function() {
       completeButton.prop('disabled', true);
       window.axios.post(taskElement.data('task-path'))
@@ -34,14 +35,14 @@ function mountTask(taskElement) {
     taskElement.append(completeButton);
   }
   if (window.permissions.update) {
-    var editButton = $('<button>Edit</button>')
+    var editButton = $('<button class="btn btn-sm btn-primary">Edit</button>')
     editButton.on('click', function () {
       openTaskModal({id: taskElement.data('task-id'), name: taskElement.find('.task-name').text(), completed: taskElement.hasClass('task-completed')});
     });
     taskElement.append(editButton);
   }
   if (window.permissions.delete) {
-    var deleteButton = $('<button>Delete</button>');
+    var deleteButton = $('<button class="btn btn-sm btn-danger">Delete</button>');
     deleteButton.on('click', function() {
       taskElement.find('button').each(function () {
         $(this).prop('disabled', true);
@@ -107,7 +108,8 @@ function openTaskModal(task) {
 function validateTask() {
   if ($('#task_name').val().trim() === '') {
     $('#task_name').addClass('is-invalid')
-                   .after($('<span class="invalid-feedback" role="alert"><strong>The name field is required.</strong></span>'));
+                   .siblings('.invalid-feedback').remove();
+    $('#task_name').after($('<span class="invalid-feedback" role="alert"><strong>The name field is required.</strong></span>'));
     return false;
   } else if ($('#task_name').val().length > 100) {
     $('#task_name').addClass('is-invalid')

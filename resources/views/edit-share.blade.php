@@ -22,8 +22,8 @@
                     <form action="{{ route('shares.destroy', ['list'=>$list, 'share'=>$share]) }}" method="POST">
                         @csrf
                         {{method_field('DELETE')}}
-                        <div class="form-group row mb-0 justify-content-center">
-                            <div class="col-4 text-center">
+                        <div class="form-group row mb-0">
+                            <div class="col-12 text-right">
                                 <button type="submit" class="btn btn-danger">
                                     Unshare list with {{ $share->user ? $share->user->name : $share->email}}
                                 </button>

@@ -118,22 +118,21 @@ class ListController extends Controller
      */
     public function show(TList $list)
     {
-        if (Auth::user() && Auth::user() != $list->user) {
-            $shared = $list->shares()
-                                 ->where('user_id', Auth::user()->id)
-                                 ->select('create', 'complete', 'delete', 'update')
-                                 ->first();
-            if ($shared) {
-                $permissions = $shared->getAttributes();
-                foreach($permissions as $key => $value) {
-                    $permissions[$key] = (bool) $value;
-                }
-            } else {
-                $permissions = ['create' => false, 'complete' => false, 'delete' => false, 'update' => false];
-            }
-        } else {
-            $permissions = ['create' => true, 'complete' => true, 'delete' => true, 'update' => true];
-        }
+        if (Auth::user()) {
+            if (Auth::user() != $list->user) {
+                $shared = $list->shares()
+                                     ->where('user_id', Auth::user()->id)
+                                     ->select('create', 'complete', 'delete', 'update')
+                                     ->first();
+                if ($shared) {
+                    $permissions = $shared->getAttributes();
+                    foreach($permissions as $key => $value) {
+                        $permissions[$key] = (bool) $value;
+                    }
+                } else $permissions = ['create' => false, 'complete' => false, 'delete' => false, 'update' => false];
+            } else $permissions = ['create' => true, 'complete' => true, 'delete' => true, 'update' => true];
+        }else $permissions = ['create' => false, 'complete' => false, 'delete' => false, 'update' => false];
+        
 
         $response = Response::view('list', ['list'=>$list, 
                                             'tasks'=>$list->tasks()->orderBy('position', 'asc')->get(),

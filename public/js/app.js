@@ -37238,9 +37238,7 @@ $(function () {
 
 __webpack_require__(/*! ./lists.js */ "./resources/js/lists.js");
 
-__webpack_require__(/*! ./tasks.js */ "./resources/js/tasks.js");
-
-__webpack_require__(/*! ./shares.js */ "./resources/js/shares.js"); // window.Vue = require('vue');
+__webpack_require__(/*! ./tasks.js */ "./resources/js/tasks.js"); // window.Vue = require('vue');
 
 /**
  * The following block of code may be used to automatically register your
@@ -37316,18 +37314,51 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+$(function () {
+  $('#list_image').on('change', function () {
+    if ($(this).prop('files').length > 0) {
+      $('#list_old_image').hide();
+      $('#list_new_image').remove();
+      var file = $(this).prop('files')[0];
+      var urlEncImage = URL.createObjectURL(file);
+      var imageData = new Image();
 
+      imageData.onload = function () {
+        if (this.width < 600 || this.height < 315) {
+          $('#list_image').addClass('is-invalid').siblings('.invalid-feedback').remove();
+          $('#list_image').after($('<span class="invalid-feedback" role="alert"><strong>Selected image is too small.</strong></span>'));
+        } else {
+          $('#list_image').removeClass('is-invalid').siblings('.invalid-feedback').remove();
+          var newImage = $('<div id="list_new_image"></div>');
+          newImage.css('background-image', 'url(' + urlEncImage + ')');
+          $('#image-container').append($(newImage));
+          newImage.hide().fadeIn(500);
+        }
+      };
 
-/***/ }),
+      imageData.src = urlEncImage;
+    } else {
+      $('#list_new_image').fadeOut(500, function () {
+        $(this).remove();
+      });
+      $('#list_image').removeClass('is-invalid').siblings('.invalid-feedback').remove();
+    }
+  });
+  $('#list_form').on('submit', function (e) {
+    if (!validateList()) e.preventDefault();
+  });
+});
 
-/***/ "./resources/js/shares.js":
-/*!********************************!*\
-  !*** ./resources/js/shares.js ***!
-  \********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+function validateList() {
+  if ($('#list_name').val().trim === '') {
+    $('#list_name').addClass('is-invalid').siblings('.invalid-feedback').remove();
+    $('#list_name').after($('<span class="invalid-feedback" role="alert"><strong>The name field is required.</strong></span>'));
+    return false;
+  }
 
-
+  if ($('#list_image').hasClass('is-invalid') && $('list_image').prop('files').length > 0) return false;
+  return true;
+}
 
 /***/ }),
 
@@ -37339,12 +37370,13 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /***/ (function(module, exports, __webpack_require__) {
 
 $(function () {
-  if (window.permissions.create) {
+  if (window.permissions && window.permissions.create) {
+    var createButtonDiv = $('<div class="col-12 text-center"></div>');
     var createButton = $('<button type="button" class="btn btn-primary">Add a task</button>');
     createButton.on('click', function () {
       openTaskModal();
     });
-    $('#task-list').after(createButton);
+    $('#task-list').after(createButtonDiv.append(createButton));
   }
 
   $('.task').each(function () {
@@ -37358,7 +37390,7 @@ function mountTask(taskElement) {
   });
 
   if (!taskElement.hasClass('task-completed') && window.permissions.complete) {
-    var completeButton = $('<button class="task-complete-button">Complete</button>');
+    var completeButton = $('<button class="task-complete-button btn btn-sm btn-success">Complete</button>');
     completeButton.on('click', function () {
       completeButton.prop('disabled', true);
       window.axios.post(taskElement.data('task-path')).then(function (response) {
@@ -37374,7 +37406,7 @@ function mountTask(taskElement) {
   }
 
   if (window.permissions.update) {
-    var editButton = $('<button>Edit</button>');
+    var editButton = $('<button class="btn btn-sm btn-primary">Edit</button>');
     editButton.on('click', function () {
       openTaskModal({
         id: taskElement.data('task-id'),
@@ -37386,7 +37418,7 @@ function mountTask(taskElement) {
   }
 
   if (window.permissions["delete"]) {
-    var deleteButton = $('<button>Delete</button>');
+    var deleteButton = $('<button class="btn btn-sm btn-danger">Delete</button>');
     deleteButton.on('click', function () {
       taskElement.find('button').each(function () {
         $(this).prop('disabled', true);
@@ -37439,7 +37471,8 @@ function openTaskModal(task) {
 
 function validateTask() {
   if ($('#task_name').val().trim() === '') {
-    $('#task_name').addClass('is-invalid').after($('<span class="invalid-feedback" role="alert"><strong>The name field is required.</strong></span>'));
+    $('#task_name').addClass('is-invalid').siblings('.invalid-feedback').remove();
+    $('#task_name').after($('<span class="invalid-feedback" role="alert"><strong>The name field is required.</strong></span>'));
     return false;
   } else if ($('#task_name').val().length > 100) {
     $('#task_name').addClass('is-invalid').after($('<span class="invalid-feedback" role="alert"><strong>The name may not be greater than 100 characters.</strong></span>'));

@@ -51,13 +51,15 @@
 
 .task {
 	position: relative;
+	margin-bottom: 0.5em;
 	
 	&:before {
 		display: block;
 		position: absolute;
 		height: 0.2em;
 		width: 0.2em;
-		top: 0.6em;
+		top: 50%;
+		transform: translateY(-50%);
 		left: -0.95em;
 		content: "";
 		background-color: black;
@@ -68,14 +70,60 @@
 		height: 1em;
 		width: 1em;
 		left: -1.3em;
-		top: 0.2em;
 		background-color: unset;
 		border-radius: 0;
 		background-image: url('/images/tick.svg');
 		background-size: cover;
 	}
+
+	.btn {
+		margin-left: 0.3em;
+	}
 }
 
 .task-name {
 	display: inline;
+}
+
+#edit-list {
+	display: block;
+	float: right;
+}
+
+#image-container {
+	text-align: center;
+	max-height: 315px;
+	margin-bottom: 0.5rem;
+}
+
+#list_new_image {
+	display: inline-block;
+	position: relative;
+	width: 100%;
+	max-width: 600px;
+	max-height: 315px;
+	overflow-y: hidden;
+	background-color: black;
+	background-size: cover;
+	background-position: center;
+
+	&:after {
+		content: '';
+		display: block;
+		padding-top: 52.35%;
+	}
+
+	&:before {
+		content: '';
+		position: absolute;
+		top: 0px;
+		left: 1.6%;
+		padding-top: 50.75%;
+		padding-right: 98.4%;
+		background-image: url('/images/logo.png');
+		background-repeat: no-repeat;
+		background-position: left bottom;
+		background-size: 33.9%;
+		z-index: 1100;
+	}
 }

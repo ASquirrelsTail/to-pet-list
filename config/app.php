@@ -132,7 +132,7 @@ return [
     |
     */
 
-    'push_header' => env('PUSH_HEADER', '</css/app.css>; rel=preload; as=style, <https://fonts.gstatic.com>; rel=preconnect, </images/logo.png>; rel=preload; as=image'),
+    'push_header' => env('PUSH_HEADER', '<'.mix('css/app.css').'>; rel=preload; as=style, <https://fonts.gstatic.com>; rel=preconnect, </images/logo.png>; rel=preload; as=image'),
 
     /*
     |--------------------------------------------------------------------------
