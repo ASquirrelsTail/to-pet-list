@@ -30,7 +30,7 @@ function mountTask(taskElement) {
           completeButton.remove();
         });
         pushToast('Successfully completed task.');
-      });
+      }).catch(pushError);
     });
     taskElement.append(completeButton);
   }
@@ -44,17 +44,7 @@ function mountTask(taskElement) {
   if (window.permissions.delete) {
     var deleteButton = $('<button class="btn btn-sm btn-danger">Delete</button>');
     deleteButton.on('click', function() {
-      taskElement.find('button').each(function () {
-        $(this).prop('disabled', true);
-      });
-      window.axios.post(taskElement.data('task-path'), {'_method': 'DELETE'})
-                  .then(function (response) {
-        taskElement.fadeOut(400, function () {
-          $(this).remove();
-          if ($('#task-list .task').length === 0) $('#task-list').append($('<p class="empty">You need to get some animals to pet!</p>'));
-          pushToast('Successfully deleted task.')
-        });
-      });
+      openDeleteModal({id: taskElement.data('task-id'), name: taskElement.find('.task-name').text()});
     });
     taskElement.append(deleteButton);
   }
@@ -105,6 +95,29 @@ function openTaskModal(task) {
   $('#taskModal').modal('show');
 }
 
+function openDeleteModal(task) {
+  $('#delete-info').text(task.name);
+  $('#delete-button').prop('disabled', false)
+                     .off('click')
+                     .one('click', function() {
+      $(this).prop('disabled', true);
+      var taskElement =  $('*[data-task-id="' + task.id + '"]');
+      taskElement.find('button').each(function () {
+        $(this).prop('disabled', true);
+      });
+      window.axios.post(taskElement.data('task-path'), {'_method': 'DELETE'})
+                  .then(function (response) {
+        $('#deleteModal').modal('hide');
+        taskElement.fadeOut(400, function () {
+          $(this).remove();
+          if ($('#task-list .task').length === 0) $('#task-list').append($('<p class="empty">You need to get some animals to pet!</p>'));
+          pushToast('Successfully deleted task.');
+        });
+      }).catch(pushError);
+    });
+  $('#deleteModal').modal('show');
+}
+
 function validateTask() {
   if ($('#task_name').val().trim() === '') {
     $('#task_name').addClass('is-invalid')
@@ -128,6 +141,7 @@ function addTask(name, priority, completed) {
     var newTask = $('<li class="task"></li>');
     newTask.attr('id', 'task-' + response.data.id)
            .attr('data-task-id', response.data.id)
+           .attr('data-task-path', $('#task_form').attr('action') + '/' + response.data.id)
            .append($('<div class="task-name"></div>').text(name));
     if (completed) newTask.addClass('task-completed');
 
@@ -141,7 +155,7 @@ function addTask(name, priority, completed) {
     $('#task_submit').prop('disabled', false);
     scrollToTask(response.data.id);
     pushToast('Successfully created task.');
-  });
+  }).catch(pushError);
 }
 
 function updateTask(id, name, priority, completed) {
@@ -167,7 +181,7 @@ function updateTask(id, name, priority, completed) {
     $('#task_submit').prop('disabled', false);
     scrollToTask(id);
     pushToast('Successfully updated task.')
-  });
+  }).catch(pushError);
 }
 
 function scrollToTask(id) {
@@ -176,6 +190,10 @@ function scrollToTask(id) {
   }, 800, function(){
     window.location.hash = 'task-' + id;
   });
+}
+
+function pushError(error) {
+  pushToast('Something went wrong! ' + error);
 }
 
 

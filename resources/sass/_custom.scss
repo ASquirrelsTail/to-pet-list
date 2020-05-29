@@ -90,6 +90,11 @@
 	float: right;
 }
 
+#delete-info {
+	display: inline;
+	overflow-wrap: break-word;
+}
+
 #image-container {
 	text-align: center;
 	max-height: 315px;
