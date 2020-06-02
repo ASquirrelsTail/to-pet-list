@@ -86,7 +86,11 @@ class ShareController extends Controller
 
         Session::flash('status', 'Successfully shared list.');
 
-        Mail::to($share->email)->send(new ListShared(Auth::user(), $share->user));
+        // Using just the sandbox domain with mailgun this will throw an exception for unauthoried addresses
+        try {
+            Mail::to($share->email)->send(new ListShared(Auth::user(), $share->user));
+        }
+        
 
         return redirect(route('lists.show', $list));
     }
