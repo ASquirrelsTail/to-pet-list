@@ -30,7 +30,7 @@
                         @forelse ($tasks as $task)
                             <li id="task-{{ $task->id }}" data-task-id="{{ $task->id }}"
                                     data-task-path="{{ route('tasks.show', ['list'=>$list, 'task'=>$task]) }}"
-                                    class="task @if ($task->completed) task-completed @endif">
+                                    class="task @if ($task->completed) task-completed @endif @if ($task->priority) task-priority @endif">
                                 <span class="task-name">{{ $task->name }}</span>
                             </li>
                         @empty

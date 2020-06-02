@@ -34,7 +34,7 @@ class Share extends Model
         });
 
         if (sizeof($permissions) > 1) return join(', ', array_slice($permissions, 0, -1)) . ' and ' . end($permissions);
-        elseif (sizeof($permissions) == 0) return $permissions[0];
+        elseif (sizeof($permissions) == 1) return $permissions[0];
         else return false;
     }
 }

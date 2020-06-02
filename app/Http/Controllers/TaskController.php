@@ -66,6 +66,7 @@ class TaskController extends Controller
         $task->completed = $request->has('completed');
         if ($request->has('priority')) {
             $task->new_position = 0;
+            $task->priority = true;
         }
         $task->save();
 
@@ -113,8 +114,9 @@ class TaskController extends Controller
         $task->fill($request->all());
         $task->completed = $request->has('completed');
         if ($request->has('priority')) {
-            $task->new_position = 0;
-        }
+            if (!$task->priority) $task->new_position = 0;
+            $task->priority = true;
+        } else $task->priority = false;
         $task->save();
 
         if ($request->isJson()) return response()->noContent();

@@ -37,7 +37,10 @@ function mountTask(taskElement) {
   if (window.permissions.update) {
     var editButton = $('<button class="btn btn-sm btn-primary">Edit</button>')
     editButton.on('click', function () {
-      openTaskModal({id: taskElement.data('task-id'), name: taskElement.find('.task-name').text(), completed: taskElement.hasClass('task-completed')});
+      openTaskModal({id: taskElement.data('task-id'),
+                     name: taskElement.find('.task-name').text(),
+                     completed: taskElement.hasClass('task-completed'),
+                     priority: taskElement.hasClass('task-priority')});
     });
     taskElement.append(editButton);
   }
@@ -56,6 +59,7 @@ function openTaskModal(task) {
     $('#taskModalLabel').text('New Task');
     $('#task_name').val('');
     $('#task_completed').prop('checked', false);
+    $('#task_priority').prop('checked', false);
     $('#task_submit').text('Create New Task');
     $('#task_form').off('submit')
                    .on('submit', function(e) {
@@ -72,6 +76,7 @@ function openTaskModal(task) {
     $('#taskModalLabel').text('Edit Task');
     $('#task_name').val(task.name);
     $('#task_completed').prop('checked', task.completed);
+    $('#task_priority').prop('checked', task.priority);
     $('#task_submit').text('Update Task');
     $('#task_form').off('submit')
                    .on('submit', function(e) {
@@ -84,7 +89,6 @@ function openTaskModal(task) {
                       else $('#task_submit').prop('disabled', false);
                    });
   }
-  $('#task_priority').prop('checked', false);
 
   $('#task_name').removeClass('is-invalid')
                  .find('.invalid-feeback')
@@ -145,8 +149,10 @@ function addTask(name, priority, completed) {
            .append($('<div class="task-name"></div>').text(name));
     if (completed) newTask.addClass('task-completed');
 
-    if (priority) $('#task-list').prepend(newTask);
-    else $('#task-list').append(newTask);
+    if (priority) {
+      newTask.addClass('task-priority');
+      $('#task-list').prepend(newTask);
+    } else $('#task-list').append(newTask);
 
     mountTask(newTask);
     $('#task-list .empty').remove();
@@ -172,9 +178,12 @@ function updateTask(id, name, priority, completed) {
     else oldTask.removeClass('task-completed');
 
     if (priority) {
-      oldTask.detach();
-      $('#task-list').prepend(oldTask);
-    }
+      if (oldTask.hasClass('task-priority')) {
+        oldTask.detach();
+        $('#task-list').prepend(oldTask);
+        oldTask.addClass('task-priority');
+      }
+    } else oldTask.removeClass('task-priority');
 
     mountTask(oldTask);
     $('#taskModal').modal('hide');
