@@ -89,6 +89,8 @@ class ShareController extends Controller
         // Using just the sandbox domain with mailgun this will throw an exception for unauthoried addresses
         try {
             Mail::to($share->email)->send(new ListShared(Auth::user(), $share->user));
+        } catch {
+            
         }
         
 

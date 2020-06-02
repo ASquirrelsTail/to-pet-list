@@ -1,11 +1,30 @@
 @extends('layouts.app')
 @section('header')
 @if ($list->public)
-    <meta property="og:url" content="{{ Request::url() }}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="{{ $list->name }} by {{ $list->user->name }}" />
-    <meta property="og:description" content="See which animals {{ $list->user->name }} has on their to pet list!" />
-    <meta property="og:image" content="{{ route('lists.image', $list) }}" />
+    <meta name="title" content="{{ $list->name }} by {{ $list->user->name }}">
+    <meta name="description" content="See which animals {{ $list->user->name }} has on their to pet list!">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ Request::url() }}">
+    <meta property="og:title" content="{{ $list->name }} by {{ $list->user->name }}">
+    <meta property="og:description" content="See which animals {{ $list->user->name }} has on their to pet list!">
+    @if ($list->image)
+    <meta property="og:image" content="{{ route('lists.image', $list) }}">
+    @else
+    <meta property="og:image" content="{{ secure_url('images/share-image.jpg') }}">
+    @endif
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ Request::url() }}">
+    <meta property="twitter:title" content="{{ $list->name }} by {{ $list->user->name }}">
+    <meta property="twitter:description" content="See which animals {{ $list->user->name }} has on their to pet list!">
+    @if ($list->image)
+    <meta property="twitter:image" content="{{ route('lists.image', $list) }}">
+    @else
+    <meta property="twitter:image" content="{{ secure_url('images/share-image.jpg') }}">
+    @endif
 @endif
 <script>
     window.permissions = @json($permissions);
