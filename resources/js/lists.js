@@ -11,7 +11,9 @@ $(function () {
         if (this.width < 600 || this.height < 315) {
           $('#list_image').addClass('is-invalid')
                           .siblings('.invalid-feedback').remove();
-          $('#list_image').after($('<span class="invalid-feedback" role="alert"><strong>Selected image is too small.</strong></span>'));
+          $('#list_image').after($('<span class="invalid-feedback" role="alert"><strong>Selected image is too small, please select another.</strong></span>'));
+          $('#list_image').attr('type', '').val('').attr('type', 'file');
+
         } else {
           $('#list_image').removeClass('is-invalid')
                           .siblings('.invalid-feedback').remove();

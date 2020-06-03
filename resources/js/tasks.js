@@ -178,7 +178,7 @@ function updateTask(id, name, priority, completed) {
     else oldTask.removeClass('task-completed');
 
     if (priority) {
-      if (oldTask.hasClass('task-priority')) {
+      if (!oldTask.hasClass('task-priority')) {
         oldTask.detach();
         $('#task-list').prepend(oldTask);
         oldTask.addClass('task-priority');
