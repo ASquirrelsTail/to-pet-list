@@ -39,7 +39,7 @@
                 <div class="card-header">
                     <h1>{{ $list->name }}</h1>
                     @can('update', $list)
-                    <a href="{{ route('lists.edit', $list) }}" id="edit-list" class="btn btn-primary">Edit List</a>
+                    <a href="{{ route('lists.edit', $list) }}" id="edit-list" class="btn btn-primary">Edit/Share List</a>
                     @else
                     By {{ $list->user->name }}
                     @endcan
