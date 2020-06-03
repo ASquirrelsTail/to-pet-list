@@ -12,7 +12,23 @@
             <p>Do you ever find yourself losing track of all the animals you plan on petting/stroking/scratching/belly-rubbing?</p>
             <p>Well, we've got the answer! With To Pet List you can create a list of all the animals you want to pet, then mark them off as you pet them. It really is that simple!</p>
         </div>
-        <div class="col-md-8 text-center mt-5">
+        @if (sizeof($lists) > 0)
+        <div class="col-md-8 col-lg-6">
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h3>Check out some lists:</h3>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        @foreach ($lists as $listref)
+                        <li><a href="{{ route('lists.show', $listref->list)}}">{{ $listref->list->name }} by {{ $listref->list->user->name }}</a></li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+        @endif
+        <div class="col-md-8 col-lg-6 text-center mt-5">
             <h2>Say goodbye to wondering if you ever got around to petting a sea lion!</h2>
             @guest
                 @if (Route::has('register'))

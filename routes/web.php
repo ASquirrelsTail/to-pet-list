@@ -11,13 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    $response = Response::view('welcome');
-    if (config('app.push_header')) {
-        $response->header('Link', config('app.push_header'));
-    }
-    return $response;
-});
+Route::get('/', 'HomeController@index')->name('home');
 
 Auth::routes();
 

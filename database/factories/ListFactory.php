@@ -19,7 +19,8 @@ $factory->state(TList::class, 'public', [
 		'public' => true
 ]);
 
-$factory->afterCreating(TList::class, function($list, $faker) {
+$factory->state(TList::class, 'with_entries', [])
+				->afterCreatingState(TList::class, 'with_entries', function($list, $faker) {
 	factory(Task::class, $faker->numberBetween(5, 10))->make([
 				'user_id' => $list->user(),
 				'list_id' => $list
