@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Session;
 use Auth;
 use Illuminate\Support\Facades\Mail;
+use GuzzleHttp\Exception\ClientException;
 
 use App\TList;
 use App\Share;
@@ -89,8 +90,8 @@ class ShareController extends Controller
         // Using just the sandbox domain with mailgun this will throw an exception for unauthoried addresses
         try {
             Mail::to($share->email)->send(new ListShared(Auth::user(), $share->user));
-        } catch {
-            
+        } catch (ClientException $e) {
+            Session::flash('status', 'Shared list without sending email.');
         }
         
 

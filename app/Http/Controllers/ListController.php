@@ -60,7 +60,8 @@ class ListController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return view('lists', ['lists'=>$user->lists,'shared_lists'=>$user->shared_lists, 'name'=>$user->name]);
+        $lists = $user->shared_lists->merge($user->lists)->sortBy('created_at');
+        return view('lists', ['lists'=>$lists, 'name'=>$user->name]);
     }
 
     /**

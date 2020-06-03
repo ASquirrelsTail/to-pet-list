@@ -12,6 +12,9 @@
                         @forelse ($lists as $list)
                             <li id="list-{{ $list->id }}">
                                 <a href="{{ route('lists.show', $list)}}">{{ $list->name }}</a> 
+                                @if($list->user->id != Auth::user()->id)
+                                    shared by {{ $list->user->name }}
+                                @endif
                                 @if($list->public)
                                     (Public)
                                 @endif
@@ -19,17 +22,6 @@
                         @empty
                             <p>You need to make some lists!</p>
                         @endforelse
-                        @if ($shared_lists)
-                            <h3>Shared Lists</h3>
-                            @foreach ($shared_lists as $list)
-                                <li id="list-{{ $list->id }}">
-                                    <a href="{{ route('lists.show', $list)}}">{{ $list->name }}</a> 
-                                    @if($list->public)
-                                        (Public)
-                                    @endif
-                                </li>
-                            @endforeach
-                        @endif
                     </ul>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newListModal">
                         Create a new list
